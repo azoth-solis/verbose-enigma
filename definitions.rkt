@@ -33,6 +33,14 @@
       (sieve (- limit 1) (cdr table) (remove-multiples limit sequence))))
   (cons 1 (sieve limit (reverse (range limit)) sequence)))
 
+;;; Jumps:
+(define (jumps sequence)
+  (define (jumps-iter sequence result)
+    (if (= (length sequence) 2)
+        (cons (- (- (car sequence) (car (cdr sequence)))) result)
+        (jumps-iter (cdr sequence) (cons (- (- (car sequence) (car (cdr sequence)))) result))))
+  (reverse (jumps-iter sequence '())))
+
 ;;; Triangle:
 (define (triangle x)
   (/ (* x (+ 1 x)) 2))
