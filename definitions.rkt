@@ -8,30 +8,24 @@
         (cons x (countdown (- x 1)))))
   (reverse (countdown x)))
 
-;;; Sum:
-(define (sum sequence)
-  (if (null? sequence)
-      0
-      (+ (car sequence) (sum (cdr sequence)))))
-
-;;; Filter HOF:
+;;; Filter:
 (define (filter predicate sequence)
   (cond ((null? sequence) '())
         ((predicate (car sequence))
          (cons (car sequence) (filter predicate (cdr sequence))))
         (else (filter predicate (cdr sequence)))))
 
-;;; Sieve of Eratosthenes:
+;;; Sieve:
 (define (eratosthenes x)
   (define sequence (cdr (range x)))
-  (define limit (inexact->exact (floor (sqrt (car (reverse (cdr (range x))))))))
+  (define iteration-count (inexact->exact (floor (sqrt (car (reverse sequence))))))
   (define (remove-multiples integer sequence)
     (cons integer (filter (lambda (x) (not (= 0 (remainder x integer)))) sequence)))
-  (define (sieve limit table sequence)
-    (if (= limit 1)
+  (define (sieve iteration-count divisors sequence)
+    (if (= iteration-count 1)
       sequence
-      (sieve (- limit 1) (cdr table) (remove-multiples limit sequence))))
-  (cons 1 (sieve limit (reverse (range limit)) sequence)))
+      (sieve (- iteration-count 1) (cdr divisors) (remove-multiples iteration-count sequence))))
+  (cons 1 (sieve iteration-count (reverse (range iteration-count)) sequence)))
 
 ;;; Jumps:
 (define (jumps sequence)
@@ -41,29 +35,12 @@
         (jumps-iter (cdr sequence) (cons (- (- (car sequence) (car (cdr sequence)))) result))))
   (reverse (jumps-iter sequence '())))
 
-;;; Triangle:
-(define (triangle x)
-  (/ (* x (+ 1 x)) 2))
-;;; Square:
-(define (square x)
-  (expt x 2))
-
-;;; Tetrahedron:
-(define (tetrahedron x)
-  (sum (map triangle (range x))))
-;;; Pyramid:
-(define (pyramid x)
-  (sum (map square (range x))))
-;;; Octahedron:
-(define (octahedron x)
-  (/ (* x (+ 1 (* 2 (square x)))) 3))
-
 ;;; Tower:
 (define (tower sequence)
   (define (level number)
     (if (= number 1)
-        (colorize (filled-rectangle 2 2) "red")
-        (hc-append (colorize (filled-rectangle 2 2) "red") (level (- number 1)))))
+        (colorize (filled-rectangle 4 4) "red")
+        (hc-append (colorize (filled-rectangle 4 4) "red") (level (- number 1)))))
   (define (tower-iter count length sequence)
     (if (= count length)
         (level (car sequence))
